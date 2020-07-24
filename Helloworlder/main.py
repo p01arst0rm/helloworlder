@@ -1,41 +1,20 @@
 import os
 import sys
-import ast
-import json
-import glob
-import tweepy
-import dateutil.parser
-import zipfile
-import tempfile
 
-class twelete:
+
+
+
+class helloworlder:
 
         # private variables
         #----------------------------------------------------------------------------
-        api_key_set = False
-        access_token_set = False
 
-        
-        filter_date = False
-        filter_activity = False
-        filter_media = False
-
-        
-        filter_phrase_black = False
-        filter_phrase_white = False
-
-        
-        # variable selection
-        # ---------------------------------------------------------------------------           
-
-        def set_media_filter(self, x):
-                twelete.filter_media = True
-                self.media_filter = x
 
 
 
         # Error handler
         #----------------------------------------------------------------------------
+
         def log_handle(self, log, log_file):
                 print(log)
                 with open(log_file, "a") as x:
@@ -43,7 +22,7 @@ class twelete:
            
 
         def log_notify(self, notif):
-                self.log_handle(str("[INFO]: "+notif),self.notify_log_file)
+                self.log_handle(str("[-]: "+notif),self.notify_log_file)
 
 
         def log_warn(self, warn):
@@ -57,17 +36,81 @@ class twelete:
 
 
 
+        # setters
+        # ---------------------------------------------------------------------------           
+
+        def set_project_dir(self, x):
+                twelete.filter_media = True
+                self.media_filter = x
+
+
+
+
+        # getters
+        # ---------------------------------------------------------------------------      
+       
+        def get_query(self, request):
+            self.log_notify(request)
+            while True:
+                    try:
+                            response = input("> ")
+                            if response in ("y","Y"):
+                                    return True
+                            elif response in ("n","N"):
+                                    return False
+                            else:
+                                    raise ValueError()
+                    except ValueError:
+                            self.log_warn("Please enter \"Y\" or \"N\"")
+
+
+
+
+        # project management
+        # ---------------------------------------------------------------------------
+
+        def make_project_dir(self):
+            if (os.path.exists(self.project_build_dir)) or (self.project_build_dir == ''):
+                self.log_warn(str("Chosen project path already exists."))
+                if not self.get_query("Do you wish to continue? (y/n)"):
+                    sys,exit()
+            else:
+                try:
+                    os.makedirs(self.project_build_dir)
+                except OSError as e: # Guard against race condition
+                    self.log_err(str(e))
+
+
+        def set_project_config(self):
+            a = 0
+
+        
+        def get_confirm(self):
+            print("-----------------------------------")
+            self.log_notify(str("Project build directory: {}").format(self.project_build_dir))
+
+
+
+            print("-----------------------------------")
+            response = self.get_query("Do you wish to continue? (y/n)")
+            return response
+
+
+
 
         # main
         # ---------------------------------------------------------------------------       
         def run(self):
-                self.get_api_tokens()
-                self.get_filters()
-                self.archive_dir=self.get_archive_dir()
-                confirm_delete = self.get_confirm()
-                
+            while True:
+                check_settings = self.get_confirm()
+                if check_settings:
+                    break
+                else:
+                    self.set_project_config()
+            
 
-                sys.exit()
+            self.make_project_dir()
+            sys.exit()
 
                 
         def __init__(self):
