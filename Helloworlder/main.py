@@ -73,7 +73,7 @@ class helloworlder:
             if (os.path.exists(self.project_build_dir)) or (self.project_build_dir == ''):
                 self.log_warn(str("Chosen project path already exists."))
                 if not self.get_query("Do you wish to continue? (y/n)"):
-                    sys,exit()
+                    sys.exit()
             else:
                 try:
                     os.makedirs(self.project_build_dir)
